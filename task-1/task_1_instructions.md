@@ -5,73 +5,106 @@
 
 
 ### 1) Подключение к jump node капитана команды
-ssh team@ip для входа
+```bash
+ssh team@ip # для входа
+```
 
 ### 2) Предоставить доступ к jump node сокомандникам:
 ##### 2.1) Собрать внешние ключи сокомандников
 ##### 2.2) Добавить их в авторизованные ключи на jn
-nano .ssh/authorized_keys - открытие нужного нам файла в редакторе nano
-ctrl + v - вставка сохраненных ключей
-ctrl + o - перезапись файла
-ctrl + x - выход из файла
+```bash
+nano .ssh/authorized_keys # открытие нужного нам файла в редакторе nano
+```
+- ctrl + v - вставка сохраненных ключей
+- ctrl + o - перезапись файла
+- ctrl + x - выход из файла
 
 ### 3) Запустим скачивание дистрибутива hadoop в сессионном менеджере
+```bash
 wget https://dlcdn.apache.org/hadoop/common/hadoop-3.4.0/hadoop-3.4.0.tar.gz
+```
 
 ### 4) Создание пользователя hadoop для взаимодействия между всеми узлами кластера
-sudo adduser hadoop - команда для создания нового пользователя
-вставить пароль команды для sudo прав 
-придумать пароль для нового пользователя (team19)
-повторить пароль для нового пользователя (team19)
-задать Full Name - hadoop
-остальные поля опциональные, можно прокликать с помощью enter
+```bash
+sudo adduser hadoop # команда для создания нового пользователя
+```
+- вставить пароль команды для sudo прав 
+- придумать пароль для нового пользователя (team19)
+- повторить пароль для нового пользователя (team19)
+- задать Full Name - hadoop
+- остальные поля опциональные, можно прокликать с помощью enter
 
 ### 5) Генерация .ssh ключа для нового пользователя hadoop для связи с другими нодами
 ##### 5.1) Войти в пользователя hadoop
+```bash
 sudo -i -u hadoop
+```
 ##### 5.2) Генерация ключа
+```bash
 ssh-keygen
+```
 ##### 5.3) Выводим публичный ключ и копируем его куда-нибудь
+```bash
 cat .ssh/id_ed25519.pub
+```
 
 ### 6) Удаление локальной адресации, чтобы хосты знали друг друга по именам
 ##### 6.1) Редактирование файла hosts на jump node
-sudo nano /etc/hosts - открытие файла
-комментируем или удаляем все что находится внутри
-вставляем ip адреса и названия всех узлов кластера и сохраняем файл
-192.168.1.78    team-19-jn
-192.168.1.79    team-19-nn
-192.168.1.80    team-19-dn-0
-192.168.1.81    team-19-dn-1
+```bash
+sudo nano /etc/hosts # открытие файла
+```
+- комментируем или удаляем все что находится внутри
+- вставляем ip адреса и названия всех узлов кластера и сохраняем файл
+- 192.168.1.78    team-19-jn
+- 192.168.1.79    team-19-nn
+- 192.168.1.80    team-19-dn-0
+- 192.168.1.81    team-19-dn-1
 
 ### 7) Возвращаемся на jump node 
 ##### 7.1) Выходим из учетки hadoop
+```bash
 exit
+```
 ##### 7.2) Переходим на jump node
-exit 
+```bash
+exit
+```
 
 ### 8) Последовательно заходим на каждый узел кластера и повторяем действия с **4) по 7.2)** (публичные ключи c этапа 5.3) складываем в одном месте)
 
 ### 9) Заходим в юзера hadoop и добавляем ключи каждого узла в авторизованные ключи
 ##### 9.1) Войти в пользователя hadoop
+```bash
 sudo -i -u hadoop
-##### 9.2) Открыть файл authorized_keys и добавить туда ключи с сохранением 
+```
+##### 9.2) Открыть файл authorized_keys и добавить туда ключи с сохранением
+```bash
 nano .ssh/authorized_keys
+```
 
 ### 10) Передаем созданный файл с ключами на все ноды
+```bash
 scp .ssh/authorized_keys team-19-nn:/home/hadoop/.ssh/
+```
 вводим пароль от пользователя hadoop для передачи
+```bash
 scp .ssh/authorized_keys team-19-dn-0:/home/hadoop/.ssh/
+```
 вводим пароль от пользователя hadoop для передачи
+```bash
 scp .ssh/authorized_keys team-19-dn-1:/home/hadoop/.ssh/
+```
 вводим пароль от пользователя hadoop для передачи
 
 ### 11) Передаем скачанный дистрибутив hadoop на все ноды
+```bash
 scp hadoop-3.4.0.tar.gz team-19-nn:/home/hadoop
 scp hadoop-3.4.0.tar.gz team-19-dn-0:/home/hadoop
 scp hadoop-3.4.0.tar.gz team-19-dn-0:/home/hadoop
+```
 
 ### 12) Переходим на name node и data nodes и распакуем архив с дистрибутивом hadoop
+```bash
 ssh team-19-nn 
 tar -xvzf hadoop-3.4.0.tar.gz 
 exit
@@ -81,113 +114,158 @@ exit
 ssh team-19-dn-1
 tar -xvzf hadoop-3.4.0.tar.gz
 exit
-
+```
 
 ## Настройка самого hadoop
 
 
 ### 13) Переходим на name node для начала настройки кластера
+```bash
 ssh team-19-nn
+```
 
 ### 14) Проверяем версию java (должна быть 11)
+```bash
 java -version
+```
 
 ### 15) Добавление переменных окружения
 ##### 15.1) Смотрим где установлена java и сохраняем путь
+```bash
 readlink -f /usr/bin/java
 /usr/lib/jvm/java-11-openjdk-amd64/bin/java
+```
 ##### 15.2) Открываем конфиг файл profile
+```bash
 nano ~/.profile
+```
 ##### 15.3) Добавляем 3 переменные в файл
-export HADOOP_HOME=/home/hadoop/hadoop-3.4.0 - где развернут дистрибутив
-export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64 - где лежит java
-export PATH=$PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbin - путь для выполнения исполняемых файлов hadoop
+```bash
+export HADOOP_HOME=/home/hadoop/hadoop-3.4.0 # где развернут дистрибутив
+export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64 # где лежит java
+export PATH=$PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbin # путь для выполнения исполняемых файлов hadoop
+```
 ##### 15.4) Проверка переменных окружения (если ошибок не вылезло, значит компоненты hadoop доступны из домашней директории)
+```bash
 source ~/.profile
 hadoop version
+```
 
 ### 16) Копируем конфиг profile на data nodes
+```bash
 scp ~/.profile team-19-dn-0:/home/hadoop
 scp ~/.profile team-19-dn-1:/home/hadoop
+```
 
 ### 17) Переходим в папку дистрибутива
+```bash
 cd hadoop-3.4.0/etc/hadoop
+```
 
 ### 18) JAVA_HOME надо добавить в hadoop-env.sh
-nano hadoop-env.sh - открыть файл
-Вставить в него JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+```bash
+nano hadoop-env.sh # открыть файл
+```
+Вставить в него 
+```bash
+JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+```
 Сохранить и выйти
 
 ### 19) Копируем hadoop-env.sh на data nodes
+```bash
 scp hadoop-env.sh team-19-dn-0:/home/hadoop/hadoop-3.4.0/etc/hadoop
 scp hadoop-env.sh team-19-dn-1:/home/hadoop/hadoop-3.4.0/etc/hadoop
+```
 
 ### 20) Настройка файловой системы
 ##### 20.1) Откроем файл core-site.xml
+```bash
 nano core-site.xml
+```
+
 ##### 20.2) Добавим внутрь файла следующие параметры:
+```xml
 <configuration>
     <property>
         <name>fs.defaultFS</name>
         <value>hdfs://team-19-nn:9000</value>
     </property>
 </configuration>
+```
 
 ##### 20.3) Откроем файл hdfs-site.xml
 ##### 20.4) Добавим внутрь файла следующие параметры (фактор репликации 3)
+```xml
 <configuration>
     <property>
         <name>dfs.replication</name>
         <value>3</value>
     </property>
 </configuration>
+```
 
 ##### 20.5) Откроем файл workers
 ##### 20.6) Меняем localhost на имена нод кластера
-team-19-nn
-team-19-dn-0
-team-19-dn-1
+
+- team-19-nn
+- team-19-dn-0
+- team-19-dn-1
 
 ### 21) Копируем все файлы с пункта 20) на data nodes
+```bash
 scp core-site.xml team-19-dn-0:/home/hadoop/hadoop-3.4.0/etc/hadoop
 scp core-site.xml team-19-dn-1:/home/hadoop/hadoop-3.4.0/etc/hadoop
 scp hdfs-site.xml team-19-dn-0:/home/hadoop/hadoop-3.4.0/etc/hadoop
 scp hdfs-site.xml team-19-dn-1:/home/hadoop/hadoop-3.4.0/etc/hadoop
 scp workers team-19-dn-0:/home/hadoop/hadoop-3.4.0/etc/hadoop
 scp workers team-19-dn-1:/home/hadoop/hadoop-3.4.0/etc/hadoop
-
+```
 
 ## Запуск кластера Hadoop
 
 
 ### 22) Переходим на 2 папки назад
+```bash
 cd ../../
+```
 
 ### 23) Форматируем файловую систему
+```bash
 bin/hdfs namenode -format
+```
 
 ### 24) Запускаем hadoop
+```bash
 sbin/start-dfs.sh
+```
 
 ### 25) Проверяем что все поднялось 
+```bash
 jps
-
+```
 
 ## Настройка nginx для возможности проверки работоспособности нашего кластера через интернет
 
 
 ### 26) Переходим на jump node
+```bash
 exit
 exit
+```
 
 ### 27) Копируем конфиг для nginx
+```bash
 sudo cp /etc/nginx/sites-available/default /etc/nginx/sites-available/nn
+```
 
 ### 28) Открываем конфиг в nano
+```bash
 sudo nano /etc/nginx/sites-available/nn
+```
 
 ### 29) Заменяем внутренности файла на следующие и сохраняем:
-```
+```bash
 ##
 # You should look at the following URL's in order to grasp a solid understanding
 # of Nginx configuration files in order to fully unleash the power of Nginx.
@@ -282,13 +360,19 @@ server {
 #}
 ```
 ### 30) Сделаем ссылку
+```bash
 sudo ln -s /etc/nginx/sites-available/nn /etc/nginx/sites-enabled/nn
+```
 
 ### 31) Перезапускаем nginx
+```bash
 sudo systemctl reload nginx
+```
 
 ### 32) Откроем в браузере интерфейс hadoop и проверим что все ноды живы
+```
 176.109.91.21:9870
+```
 
 
 
