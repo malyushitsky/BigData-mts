@@ -199,6 +199,10 @@ nano core-site.xml
 ```
 
 ##### 20.3) Откроем файл hdfs-site.xml
+```bash
+nano hdfs-site.xml
+```
+
 ##### 20.4) Добавим внутрь файла следующие параметры (фактор репликации 3)
 ```xml
 <configuration>
