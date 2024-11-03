@@ -104,7 +104,7 @@ wget https://dlcdn.apache.org/hadoop/common/hadoop-3.4.0/hadoop-3.4.0.tar.gz
 ```bash
 scp hadoop-3.4.0.tar.gz team-19-nn:/home/hadoop
 scp hadoop-3.4.0.tar.gz team-19-dn-0:/home/hadoop
-scp hadoop-3.4.0.tar.gz team-19-dn-0:/home/hadoop
+scp hadoop-3.4.0.tar.gz team-19-dn-1:/home/hadoop
 ```
 
 ### 12) Переходим на name node и data nodes и распакуем архив с дистрибутивом hadoop
