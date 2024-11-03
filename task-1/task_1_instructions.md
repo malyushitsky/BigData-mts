@@ -214,6 +214,10 @@ nano hdfs-site.xml
 ```
 
 ##### 20.5) Откроем файл workers
+```bash
+nano workers
+```
+
 ##### 20.6) Меняем localhost на имена нод кластера
 
 - team-19-nn
