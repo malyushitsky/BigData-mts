@@ -17,7 +17,7 @@ sudo apt install postgresql
 sudo -i -u postgres
 ```
 
-### 4. Подключимся к консоли PostgreSQL
+### 4. Подключение к консоли PostgreSQL
 ```bash
 psql
 ```
