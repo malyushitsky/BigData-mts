@@ -361,7 +361,7 @@ hdfs fsck /input/organizations-2000000.csv
 ### 6. Подключимся к клиенту Beeline
 
 ```bash
-beeline -u jdbc:hive2://jumpnode-ip:5433
+beeline -u jdbc:hive2://team-19-jn:5433
 ```
 
 ### 7. Сначала создадим в Hive непартиционированную таблицу и загрузим в нее данные
