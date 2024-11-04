@@ -179,7 +179,7 @@ nano hdfs-site.xml
  cd 
  ```
 
-### 2. Скачивание дистрибутива Apache Hive**
+### 2. Скачивание дистрибутива Apache Hive
 ```bash
 wget https://dlcdn.apache.org/hive/hive-4.0.1/apache-hive-4.0.1-bin.tar.gz
 ```
@@ -319,4 +319,112 @@ DESCRIBE DATABASE test;
 ### 4. Выход из Beeline
 ```bash
 Ctrl+C
+```
+
+## Загрузка датасета в Hive
+
+### 1. Переходим в корневую директорию на Jump mode
+
+```bash
+cd
+```
+
+### 2. Скачиваем архив с данными из репозитория
+
+```bash
+wget https://github.com/malyushitsky/BigData-mts/raw/refs/heads/main/data/organizations-2000000.zip
+```
+
+### 3. Для распаковки архива скачаем unzip, затем распакуем архив
+
+```bash
+exit                             # выходим из пользователя hadoop, так как у него нет sudo прав
+sudo apt install unzip           # вводим пароль sudo
+sudo -i -u hadoop                # возвращаемся обратно в пользователя hadoop
+unzip organizations-2000000.zip  # распаковываем архив
+```
+
+### 4. Создадим папку на hdfs для хранения датасета перед загрузкой в Hive и поместим туда данные
+
+```bash
+hdfs dfs -mkdir /input
+hdfs dfs -chmod g+w /input
+hdfs dfs -put organizations-2000000.csv /input
+```
+
+### 5. Посмотрим на информацию о блоках загруженного файла
+
+```bash
+hdfs fsck /input/dataset.csv
+```
+
+### 6. Подключимся к клиенту Beeline
+
+```bash
+beeline -u jdbc:hive2://jumpnode-ip:5433
+```
+
+### 7. Сначала создадим в Hive непартиционированную таблицу и загрузим в нее данные
+
+```
+use test;
+CREATE TABLE IF NOT EXISTS test.dataset_unpartitioned (
+    Index INT,
+    Organization_Id STRING,
+    Name STRING,
+    Website STRING,
+    Country STRING,
+    Description STRING,
+    Founded INT,
+    Industry STRING,
+    Number_of_employees INT)
+    ROW FORMAT DELIMITED FIELDS TERMINATED BY ‘,’
+    TBLPROPERTIES ("skip.header.line.count"="1");
+
+LOAD DATA INPATH '/input/organizations-2000000.csv' INTO TABLE test.dataset_unpartitioned;
+```
+
+### 9. Включим динамичесвое партиционирование
+
+```
+SET hive.exec.dynamic.partition=true;
+SET hive.exec.dynamic.partition.mode=nonstrict;
+```
+
+### 8. Теперь создадим в Hive партиционированную таблицу и загрузим в нее данные из непартиционированной
+
+```
+CREATE TABLE IF NOT EXISTS test.dataset_partitioned (
+    Index INT,
+    Organization_Id STRING,
+    Name STRING,
+    Website STRING,
+    Country STRING,
+    Description STRING,
+    Industry STRING,
+    Number_of_employees INT)
+    PARTITIONED BY (Founded INT)
+    ROW FORMAT DELIMITED FIELDS TERMINATED BY ‘,’;
+
+INSERT INTO TABLE test.dataset_partitioned PARTITION (Founded)
+SELECT Index, Organization_Id, Name, Website, Country, Description, Industry, Number_of_employees, Founded
+FROM test.dataset_unpartitioned;
+```
+
+### 9. Для проверки сдлеаем запрос к партиционированную таблице
+
+```
+SELECT COUNT(*) FROM dataset_unpartitioned;
+```
+
+### 10. Также можем посмотреть партиции
+
+```
+SHOW PARTITIONS dataset_unpartitioned;
+```
+
+### 11. Для выхода из Beeline
+
+```
+! quit
 ```
