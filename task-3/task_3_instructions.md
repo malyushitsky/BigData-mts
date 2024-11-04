@@ -414,17 +414,17 @@ FROM test.dataset_unpartitioned;
 ### 9. Для проверки сдлеаем запрос к партиционированную таблице
 
 ```
-SELECT COUNT(*) FROM dataset_unpartitioned;
+SELECT COUNT(*) FROM dataset_partitioned;
 ```
 
 ### 10. Также можем посмотреть партиции
 
 ```
-SHOW PARTITIONS dataset_unpartitioned;
+SHOW PARTITIONS dataset_partitioned;
 ```
 
 ### 11. Для выхода из Beeline
 
 ```
-! quit
+!quit
 ```
