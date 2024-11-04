@@ -355,7 +355,7 @@ hdfs dfs -put organizations-2000000.csv /input
 ### 5. Посмотрим на информацию о блоках загруженного файла
 
 ```bash
-hdfs fsck /input/dataset.csv
+hdfs fsck /input/organizations-2000000.csv
 ```
 
 ### 6. Подключимся к клиенту Beeline
