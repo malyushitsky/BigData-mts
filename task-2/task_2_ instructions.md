@@ -177,50 +177,6 @@ ssh -L 19888:team-19-nn:19888 team@host
 127.0.0.1:19888
 ```
 
-###  Остановка сервисов (при необходимости)
-
-##### Выполняем
-```bash
-ssh team@host
-sudo -i -u hadoop
-ssh team-19-nn
-cd hadoop-3.4.0/
-```
-
-##### Останавливаем historyserver
-```bash
-mapred --daemon stop historyserver
-```
-
-##### Останавливаем YARN (могут быть оповещения о невозможности остановки и будет сделан kill)
-```bash
-sbin/stop-yarn.sh
-```
-
-##### Останавливаем dfs
-```bash
-sbin/stop-dfs.sh
-```
-
-##### Проверка nn
-```bash
-jps
-```
-
-##### Проверка dn-0
-```bash
-ssh team-19-dn-0
-jps
-exit
-```
-
-##### Проверка dn-1
-```bash
-ssh team-19-dn-1
-jps
-exit
-```
-
 ### 14) Настройка веб-интерфейсов NodeManager
 
 ##### 14.1) Подключаемся
@@ -385,4 +341,49 @@ ssh -L 8044:team-19-dn-1:8042 team@host
 ##### 16.2) Переходим в браузере по адресу
 ```bash
 127.0.0.1:8044
+```
+
+
+###  Остановка сервисов (при необходимости)
+
+##### Выполняем
+```bash
+ssh team@host
+sudo -i -u hadoop
+ssh team-19-nn
+cd hadoop-3.4.0/
+```
+
+##### Останавливаем historyserver
+```bash
+mapred --daemon stop historyserver
+```
+
+##### Останавливаем YARN (могут быть оповещения о невозможности остановки и будет сделан kill)
+```bash
+sbin/stop-yarn.sh
+```
+
+##### Останавливаем dfs
+```bash
+sbin/stop-dfs.sh
+```
+
+##### Проверка nn
+```bash
+jps
+```
+
+##### Проверка dn-0
+```bash
+ssh team-19-dn-0
+jps
+exit
+```
+
+##### Проверка dn-1
+```bash
+ssh team-19-dn-1
+jps
+exit
 ```
