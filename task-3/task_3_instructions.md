@@ -378,8 +378,8 @@ CREATE TABLE IF NOT EXISTS test.dataset_unpartitioned (
     Founded INT,
     Industry STRING,
     Number_of_employees INT)
-    ROW FORMAT DELIMITED FIELDS TERMINATED BY ‘,’
-    TBLPROPERTIES ("skip.header.line.count"="1");
+    ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+    TBLPROPERTIES ('skip.header.line.count'='1');
 
 LOAD DATA INPATH '/input/organizations-2000000.csv' INTO TABLE test.dataset_unpartitioned;
 ```
@@ -404,7 +404,7 @@ CREATE TABLE IF NOT EXISTS test.dataset_partitioned (
     Industry STRING,
     Number_of_employees INT)
     PARTITIONED BY (Founded INT)
-    ROW FORMAT DELIMITED FIELDS TERMINATED BY ‘,’;
+    ROW FORMAT DELIMITED FIELDS TERMINATED BY ',';
 
 INSERT INTO TABLE test.dataset_partitioned PARTITION (Founded)
 SELECT Index, Organization_Id, Name, Website, Country, Description, Industry, Number_of_employees, Founded
