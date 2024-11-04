@@ -1,5 +1,5 @@
 
-# Гайд по выполнению первого задания:
+# Гайд по выполнению второго задания:
 
 ### 1) Подключение
 ```bash
@@ -88,11 +88,11 @@ nano yarn-site.xml
 
        <property>
                 <name>yarn.nodemanager.aux-services</name>
-                <name>mapreduce_shuffle</value>
+                <value>mapreduce_shuffle</value>
         </property>
         <property>
                 <name>yarn.nodemanager.env-whitelist</name>
-                <name>JAVA_HOME, HADOOP_COMMON_HOME, HADOOP_HDFS_HOME, HADOOP_CONF_DIR, CLASSPATH_PREPEND_DISTCACHE, HADOOP_YARN_HOME, HADOOP_HOME, PATH, LANG, TZ, HADOOP_MAPRED_HOME</value>
+                <value>JAVA_HOME, HADOOP_COMMON_HOME, HADOOP_HDFS_HOME, HADOOP_CONF_DIR, CLASSPATH_PREPEND_DISTCACHE, HADOOP_YARN_HOME, HADOOP_HOME, PATH, LANG, TZ, HADOOP_MAPRED_HOME</value>
         </property>
 </configuration>
 ```
@@ -157,21 +157,29 @@ sudo cp /etc/nginx/sites-available/nn /etc/nginx/sites-available/dh
  exit
 ```
  
-### 12) Проверка работы UI
-
-##### 12.1) YARN. Переходим в браузере по адресу
+### 12) Проверка работы UI YARN
+##### 12.1) Подключаемся к серверу с учетом проброшеннего порта
 ```bash
-host:8088
+ssh -L 8088:team-19-nn:8088 team@host
+```
+##### 12.2) Переходим в браузере по адресу
+```bash
+127.0.0.1:8088
 ```
 
-##### 12.2) historyserver. Переходим в браузере по адресу
+### 13) Проверка работы UI historyserver
+##### 13.1) Подключаемся к серверу с учетом проброшеннего порта
 ```bash
-host:19888
+ssh -L 19888:team-19-nn:19888 team@host
+```
+##### 13.2) Переходим в браузере по адресу
+```bash
+127.0.0.1:19888
 ```
 
-### 13) Остановка сервисов
+###  Остановка сервисов (при необходимости)
 
-##### 13.1) Выполняем
+##### Выполняем
 ```bash
 ssh team@host
 sudo -i -u hadoop
@@ -179,34 +187,34 @@ ssh team-19-nn
 cd hadoop-3.4.0/
 ```
 
-##### 13.2) Останавливаем historyserver
+##### Останавливаем historyserver
 ```bash
 mapred --daemon stop historyserver
 ```
 
-##### 13.3) Останавливаем YARN (могут быть оповещения о невозможности остановки и будет сделан kill)
+##### Останавливаем YARN (могут быть оповещения о невозможности остановки и будет сделан kill)
 ```bash
 sbin/stop-yarn.sh
 ```
 
-##### 13.4) Останавливаем dfs
+##### Останавливаем dfs
 ```bash
 sbin/stop-dfs.sh
 ```
 
-##### 13.5) Проверка nn
+##### Проверка nn
 ```bash
 jps
 ```
 
-##### 13.6) Проверка dn-0
+##### Проверка dn-0
 ```bash
 ssh team-19-dn-0
 jps
 exit
 ```
 
-##### 13.7) Проверка dn-1
+##### Проверка dn-1
 ```bash
 ssh team-19-dn-1
 jps
@@ -319,14 +327,32 @@ sudo cp /etc/nginx/sites-available/nn /etc/nginx/sites-available/nm-0
 sudo cp /etc/nginx/sites-available/nn /etc/nginx/sites-available/nm-1
 ```
 
-##### 14.8) Открываем файл и заменяем порт в listen на 8043, порт в proxy_pass на 8042
+##### 14.8) Открываем файл и заменяем 
+Открываем 
 ```bash
 sudo nano /etc/nginx/sites-available/nm-0
 ```
+Заменяем строку с listen на:
+```bash
+listen 8043 default_server;
+```
+Заменяем строку с proxy_pass на:
+```bash
+proxy_pass http://team-19-nn:8042;
+```
 
-##### 14.9) Открываем файл и заменяем порт в listen на 8044, порт в proxy_pass на 8042
+##### 14.9) Открываем файл и заменяем 
+Открываем 
 ```bash
 sudo nano /etc/nginx/sites-available/nm-1
+```
+Заменяем строку с listen на:
+```bash
+listen 8044 default_server;
+```
+Заменяем строку с proxy_pass на:
+```bash
+proxy_pass http://team-19-nn:8042;
 ```
 
 ##### 14.10) Включаем NodeManager в nginx
@@ -338,10 +364,25 @@ sudo ln -s /etc/nginx/sites-available/nm-1 /etc/nginx/sites-enabled/nm-1
 ##### 14.11) Перезапускаем nginx
 ```bash
 sudo systemctl reload nginx
+exit
 ```
 
-##### 14.12) Переходим в браузере по адресам и проверяем
+### 15) Проверка работы UI nm-0
+##### 15.1) Подключаемся к серверу с учетом проброшеннего порта
 ```bash
-host:8043
-host:8044
+ssh -L 8043:team-19-dn-0:8042 team@host
+```
+##### 15.2) Переходим в браузере по адресу
+```bash
+127.0.0.1:8043
+```
+
+### 16) Проверка работы UI nm-1
+##### 16.1) Подключаемся к серверу с учетом проброшеннего порта
+```bash
+ssh -L 8044:team-19-dn-1:8042 team@host
+```
+##### 16.2) Переходим в браузере по адресу
+```bash
+127.0.0.1:8044
 ```
