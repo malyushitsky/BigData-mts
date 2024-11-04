@@ -106,7 +106,7 @@ psql -h team-19-nn -p 5432 -U hive -W -d metastore
 ```
 
 ## Настройка Hadoop на Jump Node
-### 1. Переключение на пользователя postgres
+### 1. Переключение на пользователя hadoop
 ```bash
 sudo -i -u hadoop
 ```
