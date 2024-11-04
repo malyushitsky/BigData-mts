@@ -174,39 +174,44 @@ nano hdfs-site.xml
 
 ## Настройка Apache Hive
 
-### 1. Скачивание дистрибутива Apache Hive**
+### 1. Переход в корень файловой системы
+ ```bash
+ cd 
+ ```
+
+### 2. Скачивание дистрибутива Apache Hive**
 ```bash
 wget https://dlcdn.apache.org/hive/hive-4.0.1/apache-hive-4.0.1-bin.tar.gz
 ```
 
-### 2. Разархивация архива 
+### 3. Разархивация архива 
 ```bash
 tar -xvzf apache-hive-4.0.1-bin.tar.gz
 ```
 
-### 3. Переход в папку дистрибутива хайв
+### 4. Переход в папку дистрибутива хайв
 ```bash
 cd apache-hive-4.0.1-bin/
 ```
 
-### 4. Проверка отсутствия нужного драйвера
+### 5. Проверка отсутствия нужного драйвера
 ```bash
 cd lib
 ls -l | grep postgres
 ```
 
-### 5. Скачивание драйвера
+### 6. Скачивание драйвера
 ```bash
 wget https://jdbc.postgresql.org/download/postgresql-42.7.4.jar
 ```
 
 
-### 6. Настройка конфигурационных файлов Hive
-#### 6.1 Переход в нужную директорию:
+### 7. Настройка конфигурационных файлов Hive
+#### 7.1 Переход в нужную директорию:
 ```bash
 cd ../conf/
 ```
-#### 6.2 Создание нового файла `hive-site.xml`:
+#### 7.2 Создание нового файла `hive-site.xml`:
 ```bash
 nano hive-site.xml
 ```
@@ -244,12 +249,12 @@ nano hive-site.xml
 </configuration>
 ```
 
-### 7. Редактирование .profile для Hive
-#### 7.1 Открытие файла
+### 8. Редактирование .profile для Hive
+#### 8.1 Открытие файла
 ```bash
 nano ~/.profile
 ```
-#### 7.2 Добавление путей в файл
+#### 8.2 Добавление путей в файл
 ```plaintext
 export HIVE_HOME=/home/hadoop/apache-hive-4.0.1-bin
 export HIVE_CONF_DIR=$HIVE_HOME/conf
@@ -257,36 +262,36 @@ export HIVE_AUX_JARS_PATH=$HIVE_HOME/lib/*
 export PATH=$PATH:$HIVE_HOME/bin
 ```
 
-### 8. Активация нашего окружение
+### 9. Активация нашего окружение
 ```bash
 source ~/.profile
 ```
 
-### 9. Проверка версий Hive и Hadoop
+### 10. Проверка версий Hive и Hadoop
 ```bash
 hive --version
 hadoop version
 ```
 
-### 10. Создание директории HDFS (предварительно с помощью webUI проверить отсутствие таких папок)
+### 11. Создание директории HDFS (предварительно с помощью webUI проверить отсутствие таких папок)
 ```bash
 hdfs dfs -mkdir -p /user/hive/warehouse
 hdfs dfs -chmod g+w /tmp
 hdfs dfs -chmod g+w /user/hive/warehouse
 ```
 
-### 11. Инициализация схемы Hive
+### 12. Инициализация схемы Hive
 ```bash
 cd ../
 bin/schematool -dbType postgres -initSchema
 ```
 
-### 12. Запуск Hive Server
+### 13. Запуск Hive Server
 ```bash
 hive --hiveconf hive.server2.enable.doAs=false --hiveconf hive.security.authorization.enabled=false --service hiveserver2 1>> /tmp/hs2.log 2>> /tmp/hs2.log &
 ```
 
-### 13. Проверка запуска hive
+### 14. Проверка запуска hive
 ```bash
 jps
 ```
