@@ -12,7 +12,7 @@ ssh team-19-nn
 sudo apt install postgresql
 ```
 
-### 3. Переключаемся на пользователя postgres
+### 3. Переключение на пользователя postgres
 ```bash
 sudo -i -u postgres
 ```
@@ -308,4 +308,6 @@ DESCRIBE DATABASE test;
 ```
 
 ### 4. Выход из Beeline
-   Press `Ctrl+C` to exit.
+```bash
+Ctrl+C
+```
